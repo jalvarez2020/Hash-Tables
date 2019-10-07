@@ -13,7 +13,7 @@ class HashTable:
     that accepts string keys
     '''
     def __init__(self, capacity):
-        self.capacity = capacity  # Number of buckets in the hash table
+        self.capacity = capacity # Number of buckets in the hash table
         self.storage = [None] * capacity
 
 
@@ -46,12 +46,21 @@ class HashTable:
     def insert(self, key, value):
         '''
         Store the value with the given key.
-
         Hash collisions should be handled with Linked List Chaining.
-
         Fill this in.
+        
         '''
-        pass
+        index = self._hash_mod(key)
+        node = self.storage[index]
+        if node is None:
+            node = LinkedPair(key, value)
+            self.storage[index] = node
+            return
+        prev = node
+        while node is not None:
+            prev = node
+            node = node.next
+        prev.next = LinkedPair(key, value)
 
 
 
@@ -63,7 +72,21 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        node = self.storage[index]
+        while node is not None and node.key != key:
+            prev = node
+            node = node.next
+        if node is None:
+            return None
+        else:
+            res = node.value
+            if prev is None:
+                node = None
+            else:
+                prev.next = prev.next.next
+                return res
+
 
 
     def retrieve(self, key):
@@ -74,7 +97,12 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        item = self.storage[index]
+        if item is not None:
+            return str(item.value)
+        else:
+            return "Node not found"
 
 
     def resize(self):
@@ -84,7 +112,17 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        print("TEST OLD CAP", self.capacity)
+        self.capacity = self.capacity * 2
+        print('TEST NEW CAP', self.capacity)
+
+        if self.storage is not None:
+            idx = 0
+            while idx < len(self.storage):
+                if self.storage[idx] is not None:
+                    self._hash_mod(self.storage[idx])
+                idx += 1
+
 
 
 
